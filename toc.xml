@@ -1,0 +1,4 @@
+<Addon Author="Aramunn" APIVersion="11" Version="@project-version@" Name="CostumesExpanded" Description="View all costume slot items.">
+  <Script Name="CostumesExpanded.lua"/>
+  <Form Name="CostumesExpanded.xml"/>
+</Addon>
