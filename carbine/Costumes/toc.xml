@@ -1,0 +1,4 @@
+<Addon Name="Costumes" Version="" Author="" APIVersion="" Description="">
+    <Script Name="Costumes.lua"/>
+    <Form Name="Costumes.xml"/>
+</Addon>
