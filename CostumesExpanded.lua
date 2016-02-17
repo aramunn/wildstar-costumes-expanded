@@ -2020,6 +2020,21 @@ end
 -- CostumesExpanded
 -----------------------------------------------------------------------------------------------
 
+local tSaveDefault = {
+  nBackground = 1,
+  arWindowAnchorOffsets = { -494, -308, 494, 308 },
+}
+
+local tSettings = tSaveDefault
+
+local arBackgrounds = {
+  "ffffffff",
+  "ffffff00",
+  "ffff00ff",
+  "ff00ffff",
+  "00ffffff",
+}
+
 function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItems
   self:OnCloseLargeWindow()
   self.largeCostumeListWindow = Apollo.LoadForm(self.xmlDoc, "LargeCostumeListWindow", nil, self)
@@ -2065,31 +2080,48 @@ function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItem
 		end
 	end
 	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
+  self.largeCostumeListWindow:SetAnchorOffsets(unpack(tSettings.arWindowAnchorOffsets))
 end
 
 function Costumes:OnLargeCostumeListWindowSizeChanged()
 	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
 end
 
-function Costumes:OnLargeCostumeListWindowKeyEscape()
-  Print("escape")
+function Costumes:OnLargeCostumeListWindowClosed()
   self:OnCloseLargeWindow()
+end
+
+function Costumes:OnCycleBackground()
+  if tSettings.nBackground == #arBackgrounds then
+    tSettings.nBackground = 1
+  else
+    tSettings.nBackground = tSettings.nBackground + 1
+  end
+end
+
+function Costumes:OnResetToDefaults()
+  tSettings = tSaveDefault
 end
 
 function Costumes:OnCloseLargeWindow()
   if (self.largeCostumeListWindow and self.largeCostumeListWindow:IsValid()) then
+    local nLeft, nTop, nRight, nBottom = self.largeCostumeListWindow:GetAnchorOffsets()
+    tSettings.arWindowAnchorOffsets = { nLeft, nTop, nRight, nBottom }
     self.largeCostumeListWindow:Destroy()
     return true
   end
   return false
 end
 
-function Costumes:OnCycleBackground()
-  Print("cycle")
+function Costumes:OnSave(eLevel)
+  if eLevel ~= GameLib.CodeEnumAddonSaveLevel.Account then return nil end
+  return tSettings
 end
 
-function Costumes:OnResetToDefaults()
-  Print("defaults")
+function Costumes:OnRestore(eLevel, tSave)
+  for name, data in pairs(tSave) do
+    if tSettings[name] ~= nil then tSettings[name] = data end
+  end
 end
 
 ----------------------
