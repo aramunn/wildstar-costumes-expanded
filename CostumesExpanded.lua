@@ -2086,8 +2086,8 @@ function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItem
 		end
 	end
 	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
-  self:ChangeWindowAnchors()
   self:ChangeBackground()
+  self:ChangeWindowAnchors()
 end
 
 function Costumes:OnLargeCostumeListWindowSizeChanged()
@@ -2131,6 +2131,7 @@ function Costumes:OnCloseLargeWindow()
     local nLeft, nTop, nRight, nBottom = self.largeCostumeListWindow:GetAnchorOffsets()
     tSettings.arWindowAnchorOffsets = { nLeft, nTop, nRight, nBottom }
     self.largeCostumeListWindow:Destroy()
+    self:HelperUpdatePageItems(1)
     return true
   end
   return false
