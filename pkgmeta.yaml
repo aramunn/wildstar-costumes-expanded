@@ -1,0 +1,8 @@
+package-as: CostumesExpanded
+enable-nolib-creation: no
+
+manual-changelog: CHANGES.txt
+
+ignore:
+  - README.md
+  - carbine
