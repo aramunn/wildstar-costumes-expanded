@@ -2086,7 +2086,7 @@ function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItem
 		end
 	end
 	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
-  self.largeCostumeListWindow:SetAnchorOffsets(unpack(tSettings.arWindowAnchorOffsets))
+  self:ChangeWindowAnchors()
   self:ChangeBackground()
 end
 
@@ -2109,6 +2109,8 @@ end
 
 function Costumes:OnResetToDefaults()
   tSettings = tSaveDefault
+  self:ChangeBackground()
+  self:ChangeWindowAnchors()
 end
 
 function Costumes:ChangeBackground()
@@ -2118,6 +2120,10 @@ function Costumes:ChangeBackground()
     strSprite = "WhiteFill", cr = arBackgrounds[tSettings.nBackground],
     loc = { fPoints = {0,0,1,1}, nOffsets = {0,0,0,0} },
   })
+end
+
+function Costumes:ChangeWindowAnchors()
+  self.largeCostumeListWindow:SetAnchorOffsets(unpack(tSettings.arWindowAnchorOffsets))
 end
 
 function Costumes:OnCloseLargeWindow()
