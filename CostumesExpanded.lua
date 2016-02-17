@@ -2,6 +2,8 @@
 -- Client Lua Script for Costumes
 -- Copyright (c) NCsoft. All rights reserved
 -----------------------------------------------------------------------------------------------
+-- Edits by aramunn for CostumesExpanded
+-----------------------------------------------------------------------------------------------
 require "Apollo"
 require "GameLib"
 require "CostumesLib"
@@ -156,7 +158,7 @@ function Costumes:Init()
 end
 
 function Costumes:OnLoad()
-	self.xmlDoc = XmlDoc.CreateFromFile("Costumes.xml")
+	self.xmlDoc = XmlDoc.CreateFromFile("CostumesExpanded.xml")
 	self.xmlDoc:RegisterCallback("OnDocumentReady", self)
 end
 
@@ -1483,6 +1485,8 @@ function Costumes:OnRemoveWardrobeItem(wndHandler, wndControl)
 	if wndHandler ~= wndControl then
 		return
 	end
+  
+  self.bLargeCostumeListWindowWasOpen = self:OnCloseLargeWindow()
 	
 	local itemRemoved = wndHandler:GetData()
 	
@@ -1874,6 +1878,8 @@ function Costumes:OnForgetResult(itemRemoved, eResult)
 		if self.tCostumeSlots[eSlot]:FindChild("CostumeIcon"):GetData() == itemRemoved then
 			self:EmptySlot(eSlot, true)
 		end
+    
+    if (self.bLargeCostumeListWindowWasOpen) then self:OnShowLargeWindow() end
 	else
 		self.wndMain:FindChild("ConfirmationOverlay:ErrorPanel:ConfirmText"):SetText(ktUnlockFailureStrings[eResult] or ktUnlockFailureStrings[CostumesLib.CostumeUnlockResult.UnknownFailure])
 		
@@ -2008,6 +2014,74 @@ end
 
 function Costumes:OnPurchaseMoreDyes()
 	StorefrontLib.OpenLink(StorefrontLib.CodeEnumStoreLink.Dyes)
+end
+
+-----------------------------------------------------------------------------------------------
+-- CostumesExpanded
+-----------------------------------------------------------------------------------------------
+
+function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItems
+  self:OnCloseLargeWindow()
+  self.largeCostumeListWindow = Apollo.LoadForm(self.xmlDoc, "LargeCostumeListWindow", nil, self)
+  self.wndLargeCostumeList = self.largeCostumeListWindow:FindChild("LargeCostumeList")
+	for nItemIdx = 1, #self.arDisplayedItems do
+		local wndItemPreview = Apollo.LoadForm(self.xmlDoc, "CostumeListItem", self.wndLargeCostumeList, self)
+		local wndMannequin = wndItemPreview:FindChild("CostumeWindow")
+
+		if self.arDisplayedItems[nItemIdx] then
+			wndMannequin:SetData(self.arDisplayedItems[nItemIdx])
+			wndItemPreview:SetData(self.arDisplayedItems[nItemIdx])
+			
+			local wndCostumeBtn = wndItemPreview:FindChild("CostumeListItemBtn")
+			wndCostumeBtn:SetData(self.arDisplayedItems[nItemIdx])
+			wndCostumeBtn:SetCheck(self.itemSelected and self.itemSelected:GetItemId() == self.arDisplayedItems[nItemIdx]:GetItemId())
+			
+			wndMannequin:SetTooltipForm(nil)
+			wndMannequin:SetTooltipDoc(nil)
+			
+			wndItemPreview:Show(true)
+			
+			local tItemCostumeInfo = self.arDisplayedItems[nItemIdx]:GetCostumeUnlockInfo()
+			
+			local bCanUse = tItemCostumeInfo and tItemCostumeInfo.bCanUseInCostume
+			local wndUnusableIcon = wndItemPreview:FindChild("UnusableIcon")
+
+			wndUnusableIcon:Show(not bCanUse)
+			wndCostumeBtn:Enable(bCanUse)
+			wndItemPreview:FindChild("DeprecatedIcon"):Show(self.arDisplayedItems[nItemIdx]:IsDeprecated())
+
+			if self.eSelectedSlot == GameLib.CodeEnumItemSlots.Weapon then
+				wndMannequin:SetCamera(ktClassToWeaponCamera[GameLib.GetPlayerUnit():GetClassId()])
+				wndMannequin:SetCostumeToCreatureId(knWeaponModelId)
+			else
+				wndMannequin:SetCamera(ktItemSlotToCamera[self.eSelectedSlot])
+				wndMannequin:SetCostumeToCreatureId(ktManneqinIds[self.unitPlayer:GetGender()])
+			end
+
+			wndMannequin:SetItem(self.arDisplayedItems[nItemIdx])
+			wndMannequin:SetSheathed(false)
+		else
+			wndItemPreview:Show(false)
+		end
+	end
+	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
+end
+
+function Costumes:OnLargeCostumeListWindowSizeChanged()
+	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
+end
+
+function Costumes:OnLargeCostumeListWindowKeyEscape()
+  Print("escape")
+  self:OnCloseLargeWindow()
+end
+
+function Costumes:OnCloseLargeWindow()
+  if (self.largeCostumeListWindow and self.largeCostumeListWindow:IsValid()) then
+    self.largeCostumeListWindow:Destroy()
+    return true
+  end
+  return false
 end
 
 ----------------------
