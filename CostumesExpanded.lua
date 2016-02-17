@@ -2028,11 +2028,17 @@ local tSaveDefault = {
 local tSettings = tSaveDefault
 
 local arBackgrounds = {
+  "ff1d3c42",
+  "ff674f68",
+  "ff8d835a",
+  "ff973739",
+  
+  "ff000000",
+  "ff333333",
+  "ff666666",
+  "ff999999",
+  "ffcccccc",
   "ffffffff",
-  "ffffff00",
-  "ffff00ff",
-  "ff00ffff",
-  "00ffffff",
 }
 
 function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItems
@@ -2081,6 +2087,7 @@ function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItem
 	end
 	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
   self.largeCostumeListWindow:SetAnchorOffsets(unpack(tSettings.arWindowAnchorOffsets))
+  self:ChangeBackground()
 end
 
 function Costumes:OnLargeCostumeListWindowSizeChanged()
@@ -2097,10 +2104,20 @@ function Costumes:OnCycleBackground()
   else
     tSettings.nBackground = tSettings.nBackground + 1
   end
+  self:ChangeBackground()
 end
 
 function Costumes:OnResetToDefaults()
   tSettings = tSaveDefault
+end
+
+function Costumes:ChangeBackground()
+  local wndBackground = self.largeCostumeListWindow:FindChild("Background")
+  wndBackground:DestroyAllPixies()
+  wndBackground:AddPixie({
+    strSprite = "WhiteFill", cr = arBackgrounds[tSettings.nBackground],
+    loc = { fPoints = {0,0,1,1}, nOffsets = {0,0,0,0} },
+  })
 end
 
 function Costumes:OnCloseLargeWindow()
