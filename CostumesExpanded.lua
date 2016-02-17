@@ -2020,12 +2020,14 @@ end
 -- CostumesExpanded
 -----------------------------------------------------------------------------------------------
 
-local tSaveDefault = {
-  nBackground = 1,
-  arWindowAnchorOffsets = { -494, -308, 494, 308 },
-}
+local function getDefaultSettings()
+  return {
+    nBackground = 1,
+    arWindowAnchorOffsets = { -494, -308, 494, 308 },
+  }
+end
 
-local tSettings = tSaveDefault
+local tSettings = getDefaultSettings()
 
 local arBackgrounds = {
   "ff1d3c42",
@@ -2091,7 +2093,7 @@ function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItem
 end
 
 function Costumes:OnLargeCostumeListWindowSizeChanged()
-	self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
+  self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
 end
 
 function Costumes:OnLargeCostumeListWindowClosed()
@@ -2108,7 +2110,7 @@ function Costumes:OnCycleBackground()
 end
 
 function Costumes:OnResetToDefaults()
-  tSettings = tSaveDefault
+  tSettings = getDefaultSettings()
   self:ChangeBackground()
   self:ChangeWindowAnchors()
 end
