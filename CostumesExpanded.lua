@@ -2084,6 +2084,14 @@ function Costumes:OnCloseLargeWindow()
   return false
 end
 
+function Costumes:OnCycleBackground()
+  Print("cycle")
+end
+
+function Costumes:OnResetToDefaults()
+  Print("defaults")
+end
+
 ----------------------
 -- Instance
 ----------------------
