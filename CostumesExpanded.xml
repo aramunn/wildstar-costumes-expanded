@@ -329,7 +329,7 @@
         <Event Name="WindowKeyEscape" Function="OnLargeCostumeListWindowKeyEscape"/>
         <Event Name="WindowClosed" Function="OnLargeCostumeListWindowClosed"/>
         <Control Class="Window" LAnchorPoint="0" LAnchorOffset="0" TAnchorPoint="0" TAnchorOffset="0" RAnchorPoint="1" RAnchorOffset="0" BAnchorPoint="1" BAnchorOffset="0" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Default" TooltipType="OnCursor" Name="Background" TooltipColor="">
-            <Pixie LAnchorPoint="0" LAnchorOffset="3" TAnchorPoint="0" TAnchorOffset="3" RAnchorPoint="1" RAnchorOffset="-3" BAnchorPoint="1" BAnchorOffset="-3" Sprite="WhiteFill" BGColor="black" TextColor="black" Rotation="0" Font="Default" Text=""/>
+            <Pixie LAnchorPoint="0" LAnchorOffset="3" TAnchorPoint="0" TAnchorOffset="3" RAnchorPoint="1" RAnchorOffset="-3" BAnchorPoint="1" BAnchorOffset="-3" Sprite="WhiteFill" BGColor="ff1d3c42" TextColor="black" Rotation="0" Font="Default" Text=""/>
         </Control>
         <Control Class="Window" LAnchorPoint="0" LAnchorOffset="0" TAnchorPoint="0" TAnchorOffset="0" RAnchorPoint="1" RAnchorOffset="0" BAnchorPoint="1" BAnchorOffset="0" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Default" TooltipType="OnCursor" Name="Foreground" TooltipColor="">
             <Pixie LAnchorPoint="0" LAnchorOffset="4" TAnchorPoint="1" TAnchorOffset="-49" RAnchorPoint="1" RAnchorOffset="-4" BAnchorPoint="1" BAnchorOffset="-3" Sprite="CRB_UIKitSprites:spr_Hologram" BGColor="white" TextColor="black" Rotation="0" Font="Default" Text=""/>
