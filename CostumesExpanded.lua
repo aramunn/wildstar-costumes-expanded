@@ -2023,24 +2023,25 @@ end
 local function getDefaultSettings()
   return {
     nBackground = 1,
-    arWindowAnchorOffsets = { -494, -308, 494, 308 },
+    arWindowAnchorOffsets = { -446, -308, 446, 308 },
   }
 end
 
 local tSettings = getDefaultSettings()
 
 local arBackgrounds = {
-  "ff1d3c42",
-  "ff674f68",
-  "ff8d835a",
-  "ff973739",
-  
+  "00ffffff",
   "ff000000",
   "ff333333",
   "ff666666",
   "ff999999",
   "ffcccccc",
   "ffffffff",
+  
+  "ff1d3c42",
+  "ff674f68",
+  "ff8d835a",
+  "ff973739",
 }
 
 function Costumes:OnShowLargeWindow() --modified version of HelperUpdatePageItems
