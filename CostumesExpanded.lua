@@ -2116,9 +2116,8 @@ function Costumes:OnResetToDefaults()
 end
 
 function Costumes:ChangeBackground()
-  local wndBackground = self.largeCostumeListWindow:FindChild("Background")
-  wndBackground:DestroyAllPixies()
-  wndBackground:AddPixie({
+  self.wndLargeCostumeList:DestroyAllPixies()
+  self.wndLargeCostumeList:AddPixie({
     strSprite = "WhiteFill", cr = arBackgrounds[tSettings.nBackground],
     loc = { fPoints = {0,0,1,1}, nOffsets = {0,0,0,0} },
   })
