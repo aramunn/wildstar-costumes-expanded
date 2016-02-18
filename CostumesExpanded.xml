@@ -341,7 +341,7 @@
             <Event Name="ButtonSignal" Function="OnResetToDefaults"/>
         </Control>
         <Pixie LAnchorPoint="0" LAnchorOffset="4" TAnchorPoint="0" TAnchorOffset="4" RAnchorPoint="1" RAnchorOffset="-4" BAnchorPoint="1" BAnchorOffset="-4" Sprite="Market:UI_Auction_Header" BGColor="white" TextColor="black" Rotation="0" Font="Default" Text=""/>
-        <Pixie LAnchorPoint="0" LAnchorOffset="0" TAnchorPoint="0" TAnchorOffset="0" RAnchorPoint="1" RAnchorOffset="-2" BAnchorPoint="1" BAnchorOffset="-2" Sprite="BK3:sprHolo_ResizeHandle" BGColor="white" TextColor="black" Rotation="0" Font="Default" Text=""/>
+        <Pixie LAnchorPoint="0" LAnchorOffset="0" TAnchorPoint="0" TAnchorOffset="0" RAnchorPoint="1" RAnchorOffset="-4" BAnchorPoint="1" BAnchorOffset="-4" Sprite="BK3:sprHolo_ResizeHandle" BGColor="white" TextColor="black" Rotation="0" Font="Default" Text=""/>
         <Pixie LAnchorPoint="0" LAnchorOffset="12" TAnchorPoint="0" TAnchorOffset="20" RAnchorPoint="1" RAnchorOffset="-12" BAnchorPoint="1" BAnchorOffset="-45" Sprite="HologramSprites:HoloFrame1" BGColor="white" TextColor="black" Rotation="0" Font="Default" Text=""/>
     </Form>
 </Forms>
