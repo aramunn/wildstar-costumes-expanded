@@ -1604,31 +1604,28 @@ end
 function Costumes:UpdateCost()
 	if not self.wndMain then
 		return
+	end	
+	
+	local monCostServiceTokens = nil
+	local monCost = nil
+	if self.costumeDisplayed then
+		monCostServiceTokens = self.costumeDisplayed:GetCostOfChanges(true)
+		monCost = self.costumeDisplayed:GetCostOfChanges(false)
+	else
+		monCostServiceTokens = Money.new()
+		monCostServiceTokens:SetAccountCurrencyType(AccountItemLib.CodeEnumAccountCurrency.ServiceToken)
+		
+		monCost = Money.new()
 	end
 
 	local wndFooter = self.wndMain:FindChild("Footer")
-	local monCostServiceTokens = self.costumeDisplayed:GetCostOfChanges(true)
-	local wndPurchaseServiceTokens = wndFooter:FindChild("PurchaseServiceTokens")
-	self:HelperDrawCostBtn(wndPurchaseServiceTokens, monCostServiceTokens)
-	local tData = 
-	{	
-		wndParent = self.wndMain:FindChild("ConfirmationOverlay"),
-		strEventName = "ServiceTokenClosed_Costumes",
-		monCost = monCostServiceTokens,
-		strConfirmation = String_GetWeaselString(Apollo.GetString("ServiceToken_Confirm"), Apollo.GetString("Dyeing_WindowTitle")),
-		tActionData =
-		{
-			GameLib.CodeEnumConfirmButtonType.SaveCostumeChanges,
-			self.costumeDisplayed,
-			monCostServiceTokens:GetAccountCurrencyType() ~= 0
-		}
-	}
-	wndPurchaseServiceTokens:SetData(tData)
-
 	local wndSubmit = wndFooter:FindChild("CashBuyBtn")
-	local monCost = self.costumeDisplayed:GetCostOfChanges(false)
+	wndSubmit:SetActionData(GameLib.CodeEnumConfirmButtonType.SaveCostumeChanges, self.costumeDisplayed, false)
 	self:HelperDrawCostBtn(wndSubmit, monCost)
-	wndSubmit:SetActionData(GameLib.CodeEnumConfirmButtonType.SaveCostumeChanges, self.costumeDisplayed, monCost:GetAccountCurrencyType() ~= 0)
+	
+	local wndPurchaseServiceTokens = wndFooter:FindChild("PurchaseServiceTokens")
+	wndPurchaseServiceTokens:SetData({tActionData = {GameLib.CodeEnumConfirmButtonType.SaveCostumeChanges, self.costumeDisplayed, true,}, monCost = monCostServiceTokens,})
+	self:HelperDrawCostBtn(wndPurchaseServiceTokens, monCostServiceTokens)
 	
 	wndFooter:FindChild("ResetBtn"):Enable(self.costumeDisplayed and self.costumeDisplayed:HasChanges())
 end
@@ -1659,7 +1656,16 @@ function Costumes:HelperDrawCostBtn(wndBtn, monCost)
 end
 
 function Costumes:OnPurchaseServiceTokens(wndHandler, wndControl)
-	local tData = wndControl:GetData()
+	local tPurchaseData = wndControl:GetData()
+	
+	local tData = 
+	{	
+		wndParent = self.wndMain:FindChild("ConfirmationOverlay"),
+		strEventName = "ServiceTokenClosed_Costumes",
+		monCost = tPurchaseData.monCost,
+		strConfirmation = String_GetWeaselString(Apollo.GetString("ServiceToken_Confirm"), Apollo.GetString("Dyeing_WindowTitle")),
+		tActionData = tPurchaseData.tActionData,
+	}
 	
 	self:ActivateOverlay(keOverlayType.ServiceToken)	
 	Event_FireGenericEvent("GenericEvent_ServiceTokenPrompt", tData)
