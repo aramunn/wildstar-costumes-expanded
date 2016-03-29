@@ -1,5 +1,6 @@
 require "Apollo"
 require "Window"
+require "CostumesLib"
 
 local CostumesExpanded = {}
 local costumes
@@ -181,10 +182,22 @@ function CostumesExpanded:OnDocumentReady()
     Print("CostumesExpanded didn't load because it couldn't find Carbine's default Costumes addon.")
     return
   end
-  local method = costumes.OnInit
+  local origOnInit = costumes.OnInit
   costumes.OnInit = function (...)
-    method(...)
+    origOnInit(...)
     self:AddButtonToWindow(costumes)
+  end
+  local origOnRemoveWardrobeItem = costumes.OnRemoveWardrobeItem
+  costumes.OnRemoveWardrobeItem = function (ref, wndHandler, wndControl, ...)
+    self.bLargeCostumeListWindowWasOpen = self:OnCloseLargeWindow()
+    origOnRemoveWardrobeItem(ref, wndHandler, wndControl, ...)
+  end
+  local origOnForgetResult = costumes.OnForgetResult
+  costumes.OnForgetResult = function (ref, itemRemoved, eResult, ...)
+    origOnForgetResult(ref, itemRemoved, eResult, ...)
+    if eResult == CostumesLib.CostumeUnlockResult.ForgetItemSuccess then
+      if (self.bLargeCostumeListWindowWasOpen) then self:OnShowLargeWindow() end
+    end
   end
 end
 
@@ -199,48 +212,3 @@ end
 
 local CostumesInstance = CostumesExpanded:new()
 CostumesInstance:Init()
-
-
-
-
-
-
-
-
--- function Costumes:OnRemoveWardrobeItem(wndHandler, wndControl)
-  -- if wndHandler ~= wndControl then
-    -- return
-  -- end
-  
-  -- self.bLargeCostumeListWindowWasOpen = self:OnCloseLargeWindow()
-
-  
-  
--- function Costumes:OnForgetResult(itemRemoved, eResult)
-  -- if eResult == CostumesLib.CostumeUnlockResult.ForgetItemSuccess then
-    -- self:ClearOverlay()
-
-    -- local eSlot = ktItemSlotToEquippedItems[itemRemoved:GetSlot()]
-    -- self.tUnlockedItems[eSlot] = CostumesLib.GetUnlockedSlotItems(eSlot, self.bShowUnusable)
-
-    -- if self.eSelectedSlot and self.eSelectedSlot == eSlot then
-      -- self.arDisplayedItems = self.tUnlockedItems[eSlot]
-      -- self:SortDisplayedItems()
-    
-      -- self:HelperUpdatePageItems((self.wndMain:FindChild("PageDown"):GetData() or 0) + 1)
-    -- end
-    
-    -- if self.tCostumeSlots[eSlot]:FindChild("CostumeIcon"):GetData() == itemRemoved then
-      -- self:EmptySlot(eSlot, true)
-    -- end
-    
-    -- if (self.bLargeCostumeListWindowWasOpen) then self:OnShowLargeWindow() end
-  -- else
-    -- self.wndMain:FindChild("ConfirmationOverlay:ErrorPanel:ConfirmText"):SetText(ktUnlockFailureStrings[eResult] or ktUnlockFailureStrings[CostumesLib.CostumeUnlockResult.UnknownFailure])
-    
-    -- self:ActivateOverlay(keOverlayType.Error)
-    
-    -- self.timerError = ApolloTimer.Create(2.0, false, "OnHideError", self)
-    -- self.timerError:Start()
-  -- end
--- end
