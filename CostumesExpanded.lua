@@ -13,6 +13,8 @@ local function getDefaultSettings()
 end
 
 local tSettings = getDefaultSettings()
+local lastScrollPos = 0
+local selectedSlot = -1
 
 local arBackgrounds = {
   "00ffffff",
@@ -97,6 +99,8 @@ function CostumesExpanded:OnShowLargeWindow() --modified version of HelperUpdate
   end
   self:ChangeBackground()
   self:ChangeWindowAnchors()
+  self.wndLargeCostumeList:SetVScrollPos(lastScrollPos)
+  selectedSlot = costumes.eSelectedSlot
 end
 
 function CostumesExpanded:OnLargeCostumeListWindowSizeChanged()
@@ -139,6 +143,7 @@ function CostumesExpanded:OnCloseLargeWindow()
   if (self.largeCostumeListWindow and self.largeCostumeListWindow:IsValid()) then
     local nLeft, nTop, nRight, nBottom = self.largeCostumeListWindow:GetAnchorOffsets()
     tSettings.arWindowAnchorOffsets = { nLeft, nTop, nRight, nBottom }
+    lastScrollPos = self.wndLargeCostumeList:GetVScrollPos()
     self.largeCostumeListWindow:Destroy()
     costumes:HelperUpdatePageItems(1)
     return true
@@ -198,6 +203,18 @@ function CostumesExpanded:OnDocumentReady()
     if eResult == CostumesLib.CostumeUnlockResult.ForgetItemSuccess then
       if (self.bLargeCostumeListWindowWasOpen) then self:OnShowLargeWindow() end
     end
+  end
+  local origOnCloseCancel = costumes.OnCloseCancel
+  costumes.OnCloseCancel = function (...)
+    origOnCloseCancel(...)
+    if (self.bLargeCostumeListWindowWasOpen) then self:OnShowLargeWindow() end
+  end
+  local origHelperUpdatePageItems = costumes.HelperUpdatePageItems
+  costumes.HelperUpdatePageItems = function (...)
+    self.bLargeCostumeListWindowWasOpen = self:OnCloseLargeWindow()
+    origHelperUpdatePageItems(...)
+    if selectedSlot ~= costumes.eSelectedSlot then lastScrollPos = 0 end
+    if (self.bLargeCostumeListWindowWasOpen) then self:OnShowLargeWindow() end
   end
 end
 
