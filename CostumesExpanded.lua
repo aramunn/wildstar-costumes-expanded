@@ -108,7 +108,7 @@ function CostumesExpanded:OnLargeCostumeListWindowSizeChanged()
 end
 
 function CostumesExpanded:OnLargeCostumeListWindowClosed()
-  self:OnCloseLargeWindow()
+  self:OnCloseLargeWindow(true)
 end
 
 function CostumesExpanded:OnCycleBackground()
@@ -139,13 +139,13 @@ function CostumesExpanded:ChangeWindowAnchors()
   self.wndLargeCostumeList:ArrangeChildrenTiles(Window.CodeEnumArrangeOrigin.LeftOrTop)
 end
 
-function CostumesExpanded:OnCloseLargeWindow()
+function CostumesExpanded:OnCloseLargeWindow(bUpdateCostumes)
   if (self.largeCostumeListWindow and self.largeCostumeListWindow:IsValid()) then
     local nLeft, nTop, nRight, nBottom = self.largeCostumeListWindow:GetAnchorOffsets()
     tSettings.arWindowAnchorOffsets = { nLeft, nTop, nRight, nBottom }
     lastScrollPos = self.wndLargeCostumeList:GetVScrollPos()
     self.largeCostumeListWindow:Destroy()
-    costumes:HelperUpdatePageItems(1)
+    if (bUpdateCostumes) then costumes:HelperUpdatePageItems(1) end
     return true
   end
   return false
@@ -187,10 +187,13 @@ function CostumesExpanded:OnDocumentReady()
     Print("CostumesExpanded didn't load because it couldn't find Carbine's default Costumes addon.")
     return
   end
+  local strCloseExpanded = "OnCloseCostumesExpandedWindow"
+  costumes[strCloseExpanded] = function () self:OnCloseLargeWindow() end
   local origOnInit = costumes.OnInit
   costumes.OnInit = function (...)
     origOnInit(...)
     self:AddButtonToWindow(costumes)
+    costumes.wndMain:AddEventHandler("WindowClosed", strCloseExpanded)
   end
   local origOnRemoveWardrobeItem = costumes.OnRemoveWardrobeItem
   costumes.OnRemoveWardrobeItem = function (ref, wndHandler, wndControl, ...)
